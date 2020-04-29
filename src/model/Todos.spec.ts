@@ -1,7 +1,11 @@
 import { expect } from 'chai'
 import 'mocha'
 
-import { TodoList as ModelTodoList, Todo as ModelTodo } from './Todos'
+import {
+  KeyGenerator as ModelKeyGenerator,
+  TodoList as ModelTodoList,
+  Todo as ModelTodo,
+} from './Todos'
 
 /* *
  * Factory methods for generating objects to be tested
@@ -10,6 +14,19 @@ import { TodoList as ModelTodoList, Todo as ModelTodo } from './Todos'
  * object instance from the behaviour it has.
  */
 export namespace Factories {
+  export class KeyGenerator {
+    static createEmpty(): ModelKeyGenerator {
+      return new ModelKeyGenerator()
+    }
+
+    static createWithExistingKeys(
+      keys: Array<number>,
+      next_key: number
+    ): ModelKeyGenerator {
+      return new ModelKeyGenerator(keys, next_key)
+    }
+  }
+
   export class Todo {
     static create(): ModelTodo {
       return new ModelTodo('a todo', 1)
@@ -55,6 +72,37 @@ export namespace Factories {
  * Tests
  */
 describe('Model', () => {
+  describe('KeyGenerator', () => {
+    it('should initialize with the correct values', () => {
+      const gen = Factories.KeyGenerator.createEmpty()
+
+      expect(gen.keys_used).to.be.empty
+      expect(gen.next_key).to.equal(0)
+    })
+
+    describe('#generateNewKey()', () => {
+      const gen5 = Factories.KeyGenerator.createWithExistingKeys(
+        [0, 1, 5, 10, 49],
+        55
+      )
+      const generatorResult = gen5.generateNewKey()
+
+      it('returns a new key', () => {
+        expect(generatorResult.new_key).to.equal(55)
+      })
+
+      it('as well as a new generator', () => {
+        expect(generatorResult.new_generator).to.be.a.instanceof(
+          ModelKeyGenerator
+        )
+      })
+
+      it('& the new generator will store the new key as used', () => {
+        expect(generatorResult.new_generator.keys_used).to.contain(55)
+      })
+    })
+  })
+
   describe('Todo', () => {
     it('should initialize with the correct values', () => {
       const todo = Factories.Todo.createWithText('some text')

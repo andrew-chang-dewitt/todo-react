@@ -1,5 +1,33 @@
 import { clone } from 'lodash'
 
+export interface KeyGeneratorResult {
+  new_key: number
+  new_generator: KeyGenerator
+}
+
+export class KeyGenerator {
+  keys_used: Array<number>
+  next_key: number
+
+  constructor(keys_used: Array<number> = [], next_key: number = 0) {
+    // sort and assign so that the array is always
+    // sorted with the largest number first
+    this.keys_used = keys_used.sort((a, b) => b - a)
+    this.next_key = next_key
+  }
+
+  generateNewKey(): KeyGeneratorResult {
+    const new_keys_used = clone(this.keys_used)
+    const new_next_key = this.next_key + 1
+    new_keys_used.push(this.next_key)
+
+    return {
+      new_generator: new KeyGenerator(new_keys_used, new_next_key),
+      new_key: this.next_key,
+    }
+  }
+}
+
 export class Todo {
   text: string
   key: number
