@@ -2,19 +2,21 @@ import { clone } from 'lodash'
 
 export class Todo {
   text: string
+  key: number
   completed: boolean
 
-  constructor(text: string, completed: boolean = false) {
+  constructor(text: string, key: number, completed: boolean = false) {
     this.text = text
+    this.key = key
     this.completed = completed
   }
 
   updateText(newText: string): Todo {
-    return new Todo(newText)
+    return new Todo(newText, this.key)
   }
 
   toggleComplete(): Todo {
-    return new Todo(this.text, !this.completed)
+    return new Todo(this.text, this.key, !this.completed)
   }
 }
 

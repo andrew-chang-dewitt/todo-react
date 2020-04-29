@@ -9,22 +9,26 @@ import { TodoList as ModelTodoList, Todo as ModelTodo } from './Todos'
  * Used to separate knowledge about creating a specific
  * object instance from the behaviour it has.
  */
-namespace Factories {
+export namespace Factories {
   export class Todo {
     static create(): ModelTodo {
-      return new ModelTodo('a todo')
+      return new ModelTodo('a todo', 1)
     }
 
     static createWithText(text: string): ModelTodo {
-      return new ModelTodo(text)
+      return new ModelTodo(text, 1)
+    }
+
+    static createWithKey(key: number): ModelTodo {
+      return new ModelTodo('a todo', key)
     }
 
     static createIncomplete(): ModelTodo {
-      return new ModelTodo('a todo', false)
+      return new ModelTodo('a todo', 1, false)
     }
 
     static createComplete(): ModelTodo {
-      return new ModelTodo('a todo', true)
+      return new ModelTodo('a todo', 1, true)
     }
   }
 
@@ -36,7 +40,7 @@ namespace Factories {
     static createWithNTodos(num: number): ModelTodoList {
       let todos: Array<ModelTodo> = []
       let arr = [...Array(num - 1).keys()]
-      arr.forEach(() => todos.push(Todo.create()))
+      arr.forEach((num) => todos.push(Todo.createWithKey(num)))
 
       return new ModelTodoList(todos)
     }
@@ -56,6 +60,8 @@ describe('Model', () => {
       const todo = Factories.Todo.createWithText('some text')
 
       expect(todo.text).to.equal('some text')
+      expect(todo.completed).to.equal(false)
+      expect(todo.key).to.be.a('number')
     })
 
     describe('#updateText()', () => {
@@ -66,7 +72,12 @@ describe('Model', () => {
         expect(updated.text).to.equal('a new text value')
       })
 
-      it("won' change the original todo instance", () => {
+      it('but the key & completed status should remain the same', () => {
+        expect(updated.key).to.equal(todo.key)
+        expect(updated.completed).to.equal(todo.completed)
+      })
+
+      it("won't change the original todo instance", () => {
         expect(todo.text).to.equal('old text')
       })
     })
