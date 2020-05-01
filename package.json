@@ -20,6 +20,10 @@
       ".ts",
       ".tsx"
     ],
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
     "exclude": [
       "**/dist/**",
       "webpack.config.js",
