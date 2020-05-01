@@ -1,8 +1,12 @@
 module.exports = {
-  mode: 'production',
+  mode: 'development',
 
   // enable sourcemaps for debugging
   devtool: 'source-map',
+
+  devServer: {
+    contentBase: './src/',
+  },
 
   resolve: {
     extensions: ['.ts', '.tsx'],
