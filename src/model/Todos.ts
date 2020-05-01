@@ -1,10 +1,5 @@
 import { clone } from 'lodash'
 
-export interface KeyGeneratorResult {
-  new_key: number
-  new_generator: KeyGenerator
-}
-
 export class KeyGenerator {
   keys_used: Array<number>
   next_key: number
@@ -16,15 +11,12 @@ export class KeyGenerator {
     this.next_key = next_key
   }
 
-  generateNewKey(): KeyGeneratorResult {
+  generateNewKey(): [KeyGenerator, number] {
     const new_keys_used = clone(this.keys_used)
     const new_next_key = this.next_key + 1
     new_keys_used.push(this.next_key)
 
-    return {
-      new_generator: new KeyGenerator(new_keys_used, new_next_key),
-      new_key: this.next_key,
-    }
+    return [new KeyGenerator(new_keys_used, new_next_key), this.next_key]
   }
 }
 

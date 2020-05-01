@@ -56,7 +56,7 @@ export namespace Factories {
 
     static createWithNTodos(num: number): ModelTodoList {
       let todos: Array<ModelTodo> = []
-      let arr = [...Array(num - 1).keys()]
+      let arr = [...Array(num).keys()]
       arr.forEach((num) => todos.push(Todo.createWithKey(num)))
 
       return new ModelTodoList(todos)
@@ -88,17 +88,15 @@ describe('Model', () => {
       const generatorResult = gen5.generateNewKey()
 
       it('returns a new key', () => {
-        expect(generatorResult.new_key).to.equal(55)
+        expect(generatorResult[1]).to.equal(55)
       })
 
       it('as well as a new generator', () => {
-        expect(generatorResult.new_generator).to.be.a.instanceof(
-          ModelKeyGenerator
-        )
+        expect(generatorResult[0]).to.be.a.instanceof(ModelKeyGenerator)
       })
 
       it('& the new generator will store the new key as used', () => {
-        expect(generatorResult.new_generator.keys_used).to.contain(55)
+        expect(generatorResult[0].keys_used).to.contain(55)
       })
     })
   })
